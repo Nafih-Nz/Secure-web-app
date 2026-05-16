@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Task</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-dark text-white">
+
+<div class="container mt-5">
+
+    <h2>Edit Task</h2>
+
+    <form method="POST">
+
+        <input
+        type="text"
+        name="title"
+        class="form-control mb-3"
+        value="{{ task.title }}">
+
+        <textarea
+        name="description"
+        class="form-control mb-3">{{ task.description }}</textarea>
+
+        <button class="btn btn-warning">
+
+            Update Task
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
