@@ -1,104 +1,358 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Dashboard</title>
 
-    <title>Dashboard</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <style>
+
+        body{
+            background: linear-gradient(to right,#020617,#0f172a,#1e293b);
+            color:white;
+            font-family: Arial, sans-serif;
+            min-height:100vh;
+        }
+
+        .navbar{
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            padding:15px 0;
+        }
+
+        .navbar-brand{
+            font-size:32px;
+            font-weight:bold;
+        }
+
+        .dashboard-title{
+            font-size:65px;
+            font-weight:bold;
+        }
+
+        .dashboard-subtitle{
+            color:#cbd5e1;
+            font-size:20px;
+        }
+
+        .stats-card{
+            background:#1e293b;
+            border-radius:20px;
+            padding:30px;
+            text-align:center;
+            transition:0.3s;
+            box-shadow:0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .stats-card:hover{
+            transform:translateY(-8px);
+        }
+
+        .stats-icon{
+            font-size:55px;
+            color:#38bdf8;
+            margin-bottom:15px;
+        }
+
+        .stats-card h2{
+            font-size:45px;
+            font-weight:bold;
+        }
+
+        .form-box{
+            background:#1e293b;
+            padding:35px;
+            border-radius:25px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .form-control{
+            height:55px;
+            border-radius:12px;
+            margin-bottom:20px;
+        }
+
+        textarea.form-control{
+            height:140px;
+        }
+
+        .btn-custom{
+            padding:12px 28px;
+            border-radius:12px;
+            font-size:18px;
+            transition:0.3s;
+        }
+
+        .btn-custom:hover{
+            transform:scale(1.03);
+        }
+
+        .table-container{
+            background:#1e293b;
+            padding:30px;
+            border-radius:25px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .table{
+            color:white;
+        }
+
+        .table thead{
+            background:#2563eb;
+        }
+
+        .table td{
+            vertical-align:middle;
+        }
+
+        .action-btn{
+            border-radius:8px;
+        }
+
+        footer{
+            margin-top:80px;
+            text-align:center;
+            color:#94a3b8;
+            padding-bottom:20px;
+        }
+
+        .welcome-text{
+            color:#cbd5e1;
+            font-size:18px;
+        }
+
+    </style>
 </head>
 
-<body class="bg-dark text-white">
+<body>
 
-<div class="container mt-5">
+    <!-- Navbar -->
 
-    <h1>Task Dashboard</h1>
-    <a href="/logout"
-    class="btn btn-danger mb-3">
-    logout
-    </a>
+    <nav class="navbar navbar-expand-lg navbar-dark">
 
-    <form method="POST" enctype="multipart/form-data">
+        <div class="container">
 
-    <input
-    type="text"
-    name="title"
-    class="form-control mb-3"
-    placeholder="Task Title">
-
-    <textarea
-    name="description"
-    class="form-control mb-3"
-    placeholder="Task Description"></textarea>
-
-    <input
-    type="file"
-    name="file"
-    class="form-control mb-3">
-
-    <button class="btn btn-primary">
-
-        Add Task
-
-    </button>
-
-</form>
-
-    <hr>
-
-<h3>All Tasks</h3>
-
-<table class="table table-dark table-bordered">
-
-    <tr>
-
-        <th>ID</th>
-
-        <th>Title</th>
-
-        <th>Description</th>
-
-        <th>Action</th>
-
-    </tr>
-
-    {% for task in tasks %}
-
-    <tr>
-
-        <td>{{ task.id }}</td>
-
-        <td>{{ task.title }}</td>
-
-        <td>{{ task.description }}</td>
-
-        <td>
-
-            <a href="/edit/{{ task.id }}"
-            class="btn btn-primary btn-sm">
-
-                Edit
-
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-shield-halved"></i>
+                Secure Dashboard
             </a>
 
-            <a href="/delete/{{ task.id }}"
-            class="btn btn-danger btn-sm">
+            <div>
 
-                Delete
+                <span class="welcome-text me-3">
+                    Welcome,
+                    {{ session.username }}
+                    ({{ session.role }})
+                </span>
 
-            </a>
+                <a href="/logout"
+                   class="btn btn-danger btn-custom">
+                   Logout
+                </a>
 
-        </td>
+            </div>
 
-    </tr>
+        </div>
 
-    {% endfor %}
+    </nav>
 
-</table>
+    <!-- Main Content -->
 
-</div>
+    <div class="container mt-5">
+
+        <!-- Heading -->
+
+        <div class="mb-5">
+
+            <h1 class="dashboard-title">
+                Task Dashboard
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Manage your secure cloud tasks professionally
+            </p>
+
+        </div>
+
+        <!-- Statistics -->
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-md-4">
+
+                <div class="stats-card">
+
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                    <h2>{{ total_tasks }}</h2>
+
+                    <p>Total Tasks</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="stats-card">
+
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <h2>{{ total_users }}</h2>
+
+                    <p>Registered Users</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="stats-card">
+
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+
+                    <h2>AWS</h2>
+
+                    <p>Cloud Enabled</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Add Task -->
+
+        <div class="form-box mb-5">
+
+            <h2 class="mb-4">
+                <i class="fa-solid fa-plus"></i>
+                Add New Task
+            </h2>
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                <input type="text"
+                       name="title"
+                       class="form-control"
+                       placeholder="Enter Task Title"
+                       required>
+
+                <textarea name="description"
+                          class="form-control"
+                          placeholder="Enter Task Description"
+                          required></textarea>
+
+                <input type="file"
+                       name="file"
+                       class="form-control">
+
+                <button type="submit"
+                        class="btn btn-primary btn-custom">
+
+                    <i class="fa-solid fa-plus"></i>
+                    Add Task
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Task Table -->
+
+        <div class="table-container">
+
+            <h2 class="mb-4">
+                <i class="fa-solid fa-table"></i>
+                All Tasks
+            </h2>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for task in tasks %}
+
+                        <tr>
+
+                            <td>{{ task.id }}</td>
+
+                            <td>{{ task.title }}</td>
+
+                            <td>{{ task.description }}</td>
+
+                            <td>
+
+                                <a href="/edit/{{ task.id }}"
+                                   class="btn btn-primary btn-sm action-btn">
+
+                                   <i class="fa-solid fa-pen"></i>
+                                   Edit
+
+                                </a>
+
+                                <a href="/delete/{{ task.id }}"
+                                   class="btn btn-danger btn-sm action-btn">
+
+                                   <i class="fa-solid fa-trash"></i>
+                                   Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <footer>
+
+        © 2026 Secure Web Application |
+        DevSecOps Capstone Project
+
+    </footer>
 
 </body>
-
 </html>
