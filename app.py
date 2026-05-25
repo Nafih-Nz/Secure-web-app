@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'supersecuredevsecopskey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:SecureWebApp40123@securewebapp-db1.c5w4c24o8ers.ap-south-1.rds.amazonaws.com:3306/securedb'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 db = SQLAlchemy(app)
