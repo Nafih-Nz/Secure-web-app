@@ -96,29 +96,33 @@
 
         <form method="POST">
 
-            <input type="text"
-                   name="username"
-                   class="form-control"
-                   placeholder="Enter Username"
-                   required>
+    <input type="hidden"
+           name="csrf_token"
+           value="{{ csrf_token() }}">
 
-            <input type="email"
-                   name="email"
-                   class="form-control"
-                   placeholder="Enter Email"
-                   required>
+    <input type="text"
+           name="username"
+           class="form-control"
+           placeholder="Enter Username"
+           required>
 
-            <input type="password"
-                   name="password"
-                   class="form-control"
-                   placeholder="Enter Password"
-                   required>
+    <input type="email"
+           name="email"
+           class="form-control"
+           placeholder="Enter Email"
+           required>
 
-            <button type="submit" class="btn-register">
-                Register
-            </button>
+    <input type="password"
+           name="password"
+           class="form-control"
+           placeholder="Enter Password"
+           required>
 
-        </form>
+    <button type="submit" class="btn-register">
+        Register
+    </button>
+
+</form>
 
         <div class="login-link">
             Already have an account?

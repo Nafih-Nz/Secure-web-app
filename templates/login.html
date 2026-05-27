@@ -101,29 +101,33 @@
 
         {% endif %}
 
-        <form method="POST">
+     <form method="POST">
 
-            <input type="email"
-                   name="email"
-                   class="form-control"
-                   placeholder="Enter Email"
-                   required>
+    <input type="hidden"
+           name="csrf_token"
+           value="{{ csrf_token() }}">
 
-            <input type="password"
-                   name="password"
-                   class="form-control"
-                   placeholder="Enter Password"
-                   required>
+    <input type="email"
+           name="email"
+           class="form-control"
+           placeholder="Enter Email"
+           required>
 
-            <button type="submit"
-                    class="btn btn-success btn-login">
+    <input type="password"
+           name="password"
+           class="form-control"
+           placeholder="Enter Password"
+           required>
 
-                <i class="fa-solid fa-right-to-bracket"></i>
-                Login
+    <button type="submit"
+            class="btn btn-success btn-login">
 
-            </button>
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Login
 
-        </form>
+    </button>
+
+</form>
 
         <div class="register-link">
 

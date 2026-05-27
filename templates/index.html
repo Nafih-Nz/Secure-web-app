@@ -1,187 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Web App</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>Secure Web App</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background: linear-gradient(to right, #0f172a, #1e293b);
-            color: white;
-            font-family: Arial, sans-serif;
-        }
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
-        .navbar {
-            background-color: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
+<style>
 
-        .hero {
-            padding: 100px 0;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
 
-        .hero h1 {
-            font-size: 60px;
-            font-weight: bold;
-        }
+body{
+    background:#020617;
+    color:white;
+    overflow-x:hidden;
+}
 
-        .hero p {
-            font-size: 22px;
-            color: #cbd5e1;
-        }
+/* NAVBAR */
 
-        .btn-custom {
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 10px;
-            transition: 0.3s;
-        }
+.navbar{
+    background:rgba(15,23,42,0.8);
+    backdrop-filter:blur(10px);
+    padding:18px 0;
+}
 
-        .btn-custom:hover {
-            transform: scale(1.05);
-        }
+.navbar-brand{
+    font-size:28px;
+    font-weight:bold;
+    color:#38bdf8 !important;
+}
 
-        .card {
-            background-color: #1e293b;
-            border: none;
-            border-radius: 15px;
-            transition: 0.3s;
-        }
+/* HERO */
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:80px 0;
+}
 
-        .icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: #38bdf8;
-        }
+.hero h1{
+    font-size:72px;
+    font-weight:800;
+    line-height:1.1;
 
-        footer {
-            margin-top: 80px;
-            padding: 20px;
-            text-align: center;
-            color: #94a3b8;
-        }
-    </style>
+    background:linear-gradient(to right,#38bdf8,#818cf8);
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    font-size:22px;
+    color:#cbd5e1;
+    margin-top:25px;
+    line-height:1.8;
+}
+
+.btn-custom{
+    padding:15px 40px;
+    border-radius:12px;
+    font-weight:bold;
+    transition:0.3s;
+    margin-right:15px;
+}
+
+.btn-custom:hover{
+    transform:translateY(-5px);
+}
+
+.hero-img{
+    width:100%;
+    animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-15px);}
+    100%{transform:translateY(0px);}
+}
+
+/* FEATURES */
+
+.section-title{
+    text-align:center;
+    font-size:50px;
+    margin-bottom:60px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+.feature-card{
+    background:rgba(30,41,59,0.7);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:25px;
+    padding:40px 30px;
+    transition:0.4s;
+    height:100%;
+}
+
+.feature-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 0 30px rgba(56,189,248,0.3);
+}
+
+.icon-box{
+    width:80px;
+    height:80px;
+    background:#0f172a;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:25px;
+}
+
+.icon-box i{
+    font-size:35px;
+    color:#38bdf8;
+}
+
+/* STATS */
+
+.stats{
+    margin-top:120px;
+}
+
+.stat-box{
+    text-align:center;
+}
+
+.stat-box h2{
+    font-size:60px;
+    color:#38bdf8;
+    font-weight:bold;
+}
+
+/* FOOTER */
+
+footer{
+    margin-top:120px;
+    padding:30px;
+    text-align:center;
+    color:#94a3b8;
+    border-top:1px solid rgba(255,255,255,0.1);
+}
+
+</style>
+
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="fa-solid fa-shield-halved"></i>
-                Secure Web App
-            </a>
+<!-- NAVBAR -->
 
-            <div>
-                <a href="/login" class="btn btn-outline-light me-2">Login</a>
-                <a href="/register" class="btn btn-info">Register</a>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark">
+<div class="container">
 
-    <!-- Hero Section -->
-    <div class="container hero">
-        <div class="row align-items-center">
+<a class="navbar-brand" href="#">
+<i class="fa-solid fa-shield-halved"></i>
+ Secure Web App
+</a>
 
-            <div class="col-md-6">
-                <h1>Cloud-Based Secure Web Application</h1>
+<div>
+<a href="/login" class="btn btn-outline-light me-2">Login</a>
+<a href="/register" class="btn btn-info">Register</a>
+</div>
 
-                <p class="mt-4">
-                    Professional DevSecOps Capstone Project with
-                    Authentication, CRUD Operations, Docker,
-                    AWS Deployment, and Security Features.
-                </p>
+</div>
+</nav>
 
-                <div class="mt-4">
-                    <a href="/login" class="btn btn-primary btn-custom">
-                        Get Started
-                    </a>
+<!-- HERO -->
 
-                    <a href="/dashboard" class="btn btn-outline-light btn-custom">
-                        Dashboard
-                    </a>
-                </div>
-            </div>
+<section class="hero">
+<div class="container">
 
-            <div class="col-md-6 text-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png"
-                    width="350">
-            </div>
+<div class="row align-items-center">
 
-        </div>
-    </div>
+<div class="col-lg-6">
 
-    <!-- Features -->
-    <div class="container mt-5">
+<h1>
+Cloud-Based Secure Web Application
+</h1>
 
-        <div class="row g-4">
+<p>
+Professional DevSecOps Capstone Project with
+JWT Authentication, Docker Deployment,
+AWS Infrastructure, Reverse Proxy,
+Monitoring and Advanced Security Features.
+</p>
 
-            <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <div class="icon">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
+<div class="mt-5">
 
-                    <h4>Authentication</h4>
+<a href="/login" class="btn btn-info btn-custom">
+Get Started
+</a>
 
-                    <p>
-                        Secure login and registration system using
-                        password hashing and session management.
-                    </p>
-                </div>
-            </div>
+<a href="/dashboard" class="btn btn-outline-light btn-custom">
+Dashboard
+</a>
 
-            <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <div class="icon">
-                        <i class="fa-solid fa-database"></i>
-                    </div>
+</div>
 
-                    <h4>CRUD Operations</h4>
+</div>
 
-                    <p>
-                        Create, update, delete and manage tasks
-                        efficiently with database integration.
-                    </p>
-                </div>
-            </div>
+<div class="col-lg-6 text-center">
 
-            <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <div class="icon">
-                        <i class="fa-solid fa-cloud"></i>
-                    </div>
+<img
+src="https://cdn-icons-png.flaticon.com/512/4149/4149675.png"
+class="hero-img"
+width="500"
+>
 
-                    <h4>AWS Deployment</h4>
+</div>
 
-                    <p>
-                        Deployed using EC2, Docker, Nginx,
-                        Security Groups and CloudWatch monitoring.
-                    </p>
-                </div>
-            </div>
+</div>
 
-        </div>
+</div>
+</section>
 
-    </div>
+<!-- FEATURES -->
 
-    <!-- Footer -->
-    <footer>
-        © 2026 Secure Web Application | DevSecOps Capstone Project
-    </footer>
+<section class="container">
+
+<h2 class="section-title">
+Core Features
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-3">
+
+<div class="feature-card">
+
+<div class="icon-box">
+<i class="fa-solid fa-user-shield"></i>
+</div>
+
+<h3>Authentication</h3>
+
+<p>
+Secure JWT login system with password hashing,
+session protection and role-based access.
+</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="feature-card">
+
+<div class="icon-box">
+<i class="fa-solid fa-database"></i>
+</div>
+
+<h3>CRUD Operations</h3>
+
+<p>
+Manage tasks securely with complete
+database integration and file upload support.
+</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="feature-card">
+
+<div class="icon-box">
+<i class="fa-solid fa-cloud"></i>
+</div>
+
+<h3>AWS Deployment</h3>
+
+<p>
+Deployed using Docker, EC2, Nginx,
+Load Balancer and CloudWatch monitoring.
+</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="feature-card">
+
+<div class="icon-box">
+<i class="fa-solid fa-shield-virus"></i>
+</div>
+
+<h3>Cyber Security</h3>
+
+<p>
+Protection against SQL Injection,
+XSS attacks and API abuse using security headers.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- STATS -->
+
+<section class="stats container">
+
+<div class="row">
+
+<div class="col-md-4 stat-box">
+<h2>99%</h2>
+<p>Application Security</p>
+</div>
+
+<div class="col-md-4 stat-box">
+<h2>24/7</h2>
+<p>Cloud Monitoring</p>
+</div>
+
+<div class="col-md-4 stat-box">
+<h2>AWS</h2>
+<p>Production Deployment</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+© 2026 Secure Web Application | DevSecOps Capstone Project
+</footer>
 
 </body>
 </html>

@@ -94,24 +94,29 @@
 
             <form method="POST">
 
-                <input type="text"
-                       name="title"
-                       class="form-control"
-                       value="{{ task.title }}"
-                       required>
+    <input type="hidden"
+           name="csrf_token"
+           value="{{ csrf_token() }}">
 
-                <textarea name="description"
-                          class="form-control"
-                          required>{{ task.description }}</textarea>
+    <input type="text"
+           name="title"
+           class="form-control"
+           value="{{ task.title }}"
+           required>
 
-                <button type="submit"
-                        class="btn btn-primary btn-custom">
-                    <i class="fa-solid fa-pen"></i>
-                    Update Task
-                </button>
+    <textarea name="description"
+              class="form-control"
+              required>{{ task.description }}</textarea>
 
-            </form>
+    <button type="submit"
+            class="btn btn-primary btn-custom">
 
+        <i class="fa-solid fa-pen"></i>
+        Update Task
+
+    </button>
+
+</form>
         </div>
 
     </div>

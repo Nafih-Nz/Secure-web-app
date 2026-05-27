@@ -246,32 +246,36 @@
             </h2>
 
             <form method="POST"
-                  enctype="multipart/form-data">
+      enctype="multipart/form-data">
 
-                <input type="text"
-                       name="title"
-                       class="form-control"
-                       placeholder="Enter Task Title"
-                       required>
+    <input type="hidden"
+           name="csrf_token"
+           value="{{ csrf_token() }}">
 
-                <textarea name="description"
-                          class="form-control"
-                          placeholder="Enter Task Description"
-                          required></textarea>
+    <input type="text"
+           name="title"
+           class="form-control"
+           placeholder="Enter Task Title"
+           required>
 
-                <input type="file"
-                       name="file"
-                       class="form-control">
+    <textarea name="description"
+              class="form-control"
+              placeholder="Enter Task Description"
+              required></textarea>
 
-                <button type="submit"
-                        class="btn btn-primary btn-custom">
+    <input type="file"
+           name="file"
+           class="form-control">
 
-                    <i class="fa-solid fa-plus"></i>
-                    Add Task
+    <button type="submit"
+            class="btn btn-primary btn-custom">
 
-                </button>
+        <i class="fa-solid fa-plus"></i>
+        Add Task
 
-            </form>
+    </button>
+
+</form>
 
         </div>
 

@@ -1,19 +1,100 @@
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
+import jwt
 import os
+
+# -------------------- LOAD ENV --------------------
+
+load_dotenv()
 
 # -------------------- APP CONFIG --------------------
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'supersecuredevsecopskey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:SecureWebApp40123@securewebapp-db1.c5w4c24o8ers.ap-south-1.rds.amazonaws.com:3306/securedb'
+# -------------------- SECURITY --------------------
+
+csrf = CSRFProtect(app)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["10 per minute"]
+)
+
+app.config["RATELIMIT_STORAGE_URI"] = "memory://"
+
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
+jwt_secret = os.getenv("JWT_SECRET")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+app.permanent_session_lifetime = timedelta(minutes=30)
+
+# -------------------- DATABASE --------------------
 
 db = SQLAlchemy(app)
 
+# -------------------- FILE SECURITY --------------------
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
+
+def allowed_file(filename):
+
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# -------------------- SECURITY HEADERS --------------------
+
+@app.after_request
+def security_headers(response):
+
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+
+    response.headers['Server'] = 'SecureServer'
+
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+        "script-src 'self' https://cdn.jsdelivr.net; "
+        "font-src 'self' https://cdnjs.cloudflare.com; "
+        "img-src 'self' data: https:;"
+    )
+
+    response.headers['Strict-Transport-Security'] = (
+        'max-age=31536000; includeSubDomains'
+    )
+
+    response.headers["Cache-Control"] = (
+        "no-cache, no-store, must-revalidate"
+    )
+
+    response.headers["Pragma"] = "no-cache"
+
+    response.headers["Expires"] = "0"
+
+    return response
 # -------------------- DATABASE MODELS --------------------
 
 class User(db.Model):
@@ -40,7 +121,6 @@ class User(db.Model):
         db.String(20),
         default='user'
     )
-
 
 class Task(db.Model):
 
@@ -82,9 +162,22 @@ def register():
 
     if request.method == 'POST':
 
-        username = request.form['username']
-        email = request.form['email']
+        username = request.form['username'].strip()
+
+        email = request.form['email'].strip().lower()
+
         password = request.form['password']
+
+        # PASSWORD VALIDATION
+
+        if len(password) < 8:
+
+            flash(
+                "Password must be at least 8 characters!",
+                "danger"
+            )
+
+            return redirect('/register')
 
         existing_user = User.query.filter_by(
             email=email
@@ -101,7 +194,8 @@ def register():
 
         hashed_password = generate_password_hash(password)
 
-        # AUTO ADMIN CREATION
+        # ROLE
+
         role = 'user'
 
         if email == "admin@gmail.com":
@@ -115,6 +209,7 @@ def register():
         )
 
         db.session.add(new_user)
+
         db.session.commit()
 
         flash(
@@ -129,11 +224,13 @@ def register():
 # -------------------- LOGIN --------------------
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def login():
 
     if request.method == 'POST':
 
-        email = request.form['email']
+        email = request.form['email'].strip().lower()
+
         password = request.form['password']
 
         user = User.query.filter_by(
@@ -145,18 +242,30 @@ def login():
             password
         ):
 
+            session.permanent = True
+
             session['user_id'] = user.id
+
             session['username'] = user.username
+
             session['role'] = user.role
+
+            token = jwt.encode(
+                {
+                    "user": user.email,
+                    "role": user.role,
+                    "exp": datetime.utcnow() + timedelta(hours=1)
+                },
+                jwt_secret,
+                algorithm="HS256"
+            )
+
+            print(token)
 
             flash(
                 "Login Successful!",
                 "success"
             )
-
-            # ROLE BASED LOGIN
-            if user.role == 'admin':
-                return redirect('/dashboard')
 
             return redirect('/dashboard')
 
@@ -176,7 +285,6 @@ def login():
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
 
-    # SESSION PROTECTION
     if 'user_id' not in session:
 
         flash(
@@ -187,16 +295,18 @@ def dashboard():
         return redirect('/login')
 
     # ADD TASK
+
     if request.method == 'POST':
 
-        title = request.form['title']
-        description = request.form['description']
+        title = request.form['title'].strip()
 
-        file = request.files['file']
+        description = request.form['description'].strip()
+
+        file = request.files.get('file')
 
         filename = ""
 
-        if file and file.filename != "":
+        if file and file.filename != "" and allowed_file(file.filename):
 
             filename = secure_filename(
                 file.filename
@@ -222,6 +332,7 @@ def dashboard():
         )
 
         db.session.add(new_task)
+
         db.session.commit()
 
         flash(
@@ -231,19 +342,18 @@ def dashboard():
 
         return redirect('/dashboard')
 
-    # ADMIN CAN SEE ALL TASKS
+    # ADMIN
+
     if session['role'] == 'admin':
 
         tasks = Task.query.all()
 
-    # USER CAN SEE OWN TASKS
     else:
 
         tasks = Task.query.filter_by(
             user_id=session['user_id']
         ).all()
 
-    # STATS
     total_tasks = Task.query.count()
 
     total_users = User.query.count()
@@ -261,7 +371,6 @@ def dashboard():
         username=session['username'],
 
         role=session['role']
-
     )
 
 # -------------------- EDIT TASK --------------------
@@ -275,7 +384,6 @@ def edit(id):
 
     task = Task.query.get_or_404(id)
 
-    # USER SECURITY
     if session['role'] != 'admin':
 
         if task.user_id != session['user_id']:
@@ -289,9 +397,9 @@ def edit(id):
 
     if request.method == 'POST':
 
-        task.title = request.form['title']
+        task.title = request.form['title'].strip()
 
-        task.description = request.form['description']
+        task.description = request.form['description'].strip()
 
         db.session.commit()
 
@@ -318,7 +426,6 @@ def delete(id):
 
     task = Task.query.get_or_404(id)
 
-    # USER SECURITY
     if session['role'] != 'admin':
 
         if task.user_id != session['user_id']:
@@ -366,5 +473,5 @@ if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
         port=5000,
-        debug=True
+        debug=False
     )
